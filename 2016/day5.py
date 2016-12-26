@@ -29,7 +29,7 @@ def part2(seed):
     while '_' in password:
         hashed = hash_generator.next()
         position, value = hashed[5:7]
-        if ord(position) > ord('7'):
+        if ord(position) > ord('7') or password[int(position)] != '_':
             continue
         password = password[:int(position)] + value + password[int(position) + 1:]
         print password
@@ -37,9 +37,9 @@ def part2(seed):
 
 if __name__ == '__main__':
     try:
-        seed = open('day5_input.txt').read()
-    except ValueError:
-        seed = 'uqwqemis'
+        seed = open('day5_input.txt').read().strip('\n')
+    except IOError:
+        seed = 'abc'
 
     if sys.argv[1] == '1':
         part1(seed)
