@@ -10,7 +10,8 @@ class City(object):
         self.distances = {}
 
     def __repr__(self):
-        return '%s' % ', '.join('%s: %s' % (city, name) for city, name in self.distances.iteritems())
+        return '%s' % ', '.join('%s: %s' % (city, name)
+                                for city, name in self.distances.iteritems())
 
 
 def parse_input():
