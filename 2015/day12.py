@@ -26,6 +26,21 @@ def is_string(item):
     return isinstance(item, basestring)
 
 
+def recurse(obj):
+    if is_int(obj):
+        return obj
+    elif is_string(obj):
+        return 0
+    elif is_list(obj):
+        return sum(recurse(o) for o in obj)
+    elif is_dict:
+        if 'red' in obj.values():
+            return 0
+        else:
+            # Numbers won't be in the keys of the dict
+            return recurse(obj.values())
+
+
 def recursive_search(obj, numbers):
     if not obj:
         return numbers
