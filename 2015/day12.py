@@ -41,34 +41,6 @@ def recurse(obj):
             return recurse(obj.values())
 
 
-def recursive_search(obj, numbers):
-    if not obj:
-        return numbers
-    elif is_list(obj):
-        for item in obj:
-            if is_int(item):
-                numbers.append(item)
-            elif is_string(item):
-                continue
-            else:
-                answer = recursive_search(item, numbers)
-                numbers.extend(answer)
-    elif is_dict(obj):
-        if any(item == 'red' for item in obj.values()):
-            return []
-        else:
-            for k, v in obj.iteritems():
-                if is_int(v):
-                    numbers.append(v)
-                elif is_string(v):
-                    continue
-                else:
-                    answer = recursive_search(v, numbers)
-                    numbers.extend(answer)
-
-    return numbers
-
-
 if __name__ == '__main__':
     json_string = parse_input()
     tests = [
@@ -77,16 +49,13 @@ if __name__ == '__main__':
         ('[1,2,3]', 6),
         ('{"d":"red","e":[1,2,3,4],"f":5}', 0),
     ]
-    # import pdb; pdb.set_trace()
+    # Part 1: no json decoding or searching needed:
+    print 'Part 1: ', sum(int(num) for num in re.findall(r'([-]?[\d]+)', str(json_string)))
     for test_inp, val in tests:
         print 'input: ', test_inp
-        answer = recursive_search(json.loads(test_inp), [])
+        answer = recurse(json.loads(test_inp))
         print 'returns:  ', answer
         print 'desired answer', val
         print '=' * 20
 
-    # print sum(recursive_search(json_string, []))
-    print recurse(json_string)
-    # Part 1: no json decoding or searching needed:
-    # print sum(int(num) for num in re.findall(r'([-]?[\d]+)', json_string))
-    # commands = json.loads(test)
+    print 'Part 2:', recurse(json_string)
