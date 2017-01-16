@@ -1,10 +1,11 @@
+import re
 import itertools
 from collections import defaultdict
 
 
 def read_input():
     with open('day13.txt') as f:
-        return f.readlines()
+        return f.read().splitlines()
 
 
 class Seat(object):
@@ -70,18 +71,18 @@ def parse_line(input_line):
         possible = {'gain': 1, 'lose': -1}
         return possible[word]
 
-    name = input_line.split(' ')[0]
-    neighbor = input_line.split(' ')[-1].strip('.\n')
-    valence_word = input_line.split(' ')[2]
-    value = int(input_line.split(' ')[3]) * map_valence(valence_word)
+    regex = r'(\w+) would (\w+) (\d+) happiness units by sitting next to (\w+).'
+    name, valence_word, units, neighbor = re.match(regex, input_line).groups()
+
+    value = units * map_valence(valence_word)
     return name, value, neighbor
 
 
 def add_you(input_lines, people):
     lines = []
     for person in people:
-        lines.append("%s would gain 0 happiness units by sitting next to You" % person)
-        lines.append("You would gain 0 happiness units by sitting next to %s" % person)
+        lines.append("%s would gain 0 happiness units by sitting next to You." % person)
+        lines.append("You would gain 0 happiness units by sitting next to %s." % person)
 
     return input_lines + lines
 
@@ -90,11 +91,15 @@ if __name__ == '__main__':
     input_lines = read_input()
     person_values = create_person_values(input_lines)
     people = person_values.keys()
-    # Part 2: recalculate person_values with you
-    extended_lines = add_you(input_lines, people)
-    person_values = create_person_values(extended_lines)
-    people = person_values.keys()
-
     optimal_arrangement = most_happiness(people, person_values)
     print optimal_arrangement
     print 'Happiness: ', total_happiness(optimal_arrangement)
+
+    # # Part 2: recalculate person_values with you
+    # extended_lines = add_you(input_lines, people)
+    # person_values = create_person_values(extended_lines)
+    # people = person_values.keys()
+
+    # optimal_arrangement = most_happiness(people, person_values)
+    # print optimal_arrangement
+    # print 'Happiness: ', total_happiness(optimal_arrangement)
