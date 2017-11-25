@@ -8,7 +8,8 @@ def parse_input(test=False):
         lines = test_input().splitlines()
     lines = [list(line.replace('.', '0').replace('#', '1'))
              for line in lines]
-    return np.array(lines).astype(np.uint8)
+    lights = np.array(lines).astype(np.uint8)
+    return np.pad(lights, 1, 'constant', constant_values=(0,0))
 
 
 def test_input():
@@ -21,18 +22,15 @@ def test_input():
 
 
 def neighbors(row, col, num_rows, num_cols):
-    valid_rows = list(range(max(0, row-1), min(num_rows, row+2)))
-    valid_cols = list(range(max(0, col-1), min(num_cols, col+2)))
-    all_pairs = set((r, c) for r in valid_rows for c in valid_cols)
-    return all_pairs - set([(row, col)])
+    # With padding, don't have to check bounds
+    return {(row-1, col-1), (row-1, col), (row-1, col+1),
+     (row, col-1),                  (row, col+1),
+     (row+1, col-1), (row+1, col), (row+1, col+1)}
 
 
 def corners(grid):
-    r, c= grid.shape
-    max_r = r-1
-    max_c = c-1
-
-    return ((0, 0), (0, max_c), (max_r, 0), (max_r, max_c))
+    # would be ((0, 0), (0, -1), (-1, 0), (-1, -1)), but zero padded
+    return ((1, 1), (1, -2), (-2, 1), (-2, -2))
 
 
 def flick_light(grid, new_grid, row, col):
@@ -57,8 +55,9 @@ def test_off(grid, row, col):
     return int(num_on == 3)
 
 def step(grid, new_grid):
-    for (r, c) in np.ndindex(grid.shape):
-        flick_light(grid, new_grid, r, c)
+    for r in range(1, grid.shape[0]-1):
+        for c in range(1, grid.shape[1]-1):
+            flick_light(grid, new_grid, r, c)
 
     # Part two: corners always on
     for (r, c) in corners(grid):
