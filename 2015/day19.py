@@ -46,6 +46,17 @@ def build_string(cur_string, steps, rules, target_string):
                          target_string)
 
 
+def make_rule_dict(rules):
+    # Reverse the keys and vals, go from finish to start
+    return {end[::-1]: start[::-1] for (start, end) in rules}
+
+
+def replace_one(whole_string, rule_dict):
+    pat = '|'.join(rule_dict.keys())
+    repl_func = lambda x: rule_dict[x.group()]
+    # Replace the first match with the value from rule_dict
+    return re.sub(pat, repl_func, whole_string, 1)
+
 if __name__ == '__main__':
     rules, text_input = parse_input()
     # Test input
@@ -62,8 +73,16 @@ if __name__ == '__main__':
     start_string = 'e'
     max_length = len(target_string)
     # import pdb; pdb.set_trace()
-    build_string(start_string,
-                 starting_step,
-                 rules,
-                 target_string,
-                 max_length)
+    # build_string(start_string,
+    #              starting_step,
+    #              rules,
+    #              target_string)
+
+    # Part 2 (somehow)
+    rule_dict = make_rule_dict(rules)
+    count = 0
+    whole_string = target_string[::-1]
+    while whole_string != 'e':
+        whole_string = replace_one(whole_string, rule_dict)
+        count += 1
+    print(count)
