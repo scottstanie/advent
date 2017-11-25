@@ -31,9 +31,9 @@ def run_rule(rule, text_input):
 def build_string(cur_string, steps, rules, target_string):
     # Check for recursion termination
     if cur_string == target_string:
-        print 'FOUND!'
-        print '%s steps taken' % steps
-        print cur_string
+        print('FOUND!')
+        print('%s steps taken' % steps)
+        print(cur_string)
         return None  # Return none to end the search
     elif len(cur_string) >= len(target_string):
         return None
