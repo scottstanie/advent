@@ -34,6 +34,20 @@ def get_idxs(cur_list, cur_pos, length):
     return [n % len(cur_list) for n in range(cur_pos, cur_pos + length)]
 
 
+def knot_hash(input_str):
+    length_arr = get_start_list(input_str)
+    cur_list = np.arange(0, 256)
+    cur_pos = 0
+    cur_skip = 0
+    for _ in range(64):  # rounds
+        for length in length_arr:
+            idxs = get_idxs(cur_list, cur_pos, length)
+            rotate(cur_list, idxs)
+            cur_pos = (cur_pos + length + cur_skip) % len(cur_list)
+            cur_skip += 1
+
+    return reduce_256(cur_list)
+
 if __name__ == '__main__':
     input_str = "183,0,31,146,254,240,223,150,2,206,161,1,255,232,199,88"
     # input_str = "3,4,1,5"  # testing
@@ -54,15 +68,5 @@ if __name__ == '__main__':
     print(cur_list)
     print(cur_list[0] * cur_list[1])
 
-    length_arr = get_start_list(input_str)
-    cur_list = np.arange(0, 256)
-    cur_pos = 0
-    cur_skip = 0
-    for _ in range(64):  # rounds
-        for length in length_arr:
-            idxs = get_idxs(cur_list, cur_pos, length)
-            rotate(cur_list, idxs)
-            cur_pos = (cur_pos + length + cur_skip) % len(cur_list)
-            cur_skip += 1
-
-    print(reduce_256(cur_list))
+    print("Part 2:")
+    print(knot_hash(input_str))
